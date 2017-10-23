@@ -3,10 +3,10 @@ import { ObjectId } from 'mongodb'
 
 class Resposta {
 
-    constructor(questionarioId, perguntas, horario, nomePessoa) {
+    constructor(votacaoId, perguntas, horario, nomePessoa) {
 
         this._id = new ObjectId();
-        this.questionarioId = questionarioId;
+        this.votacaoId = votacaoId;
         this.perguntas = perguntas;
         this.horario = horario;
         this.nomePessoa = nomePessoa;
@@ -15,7 +15,7 @@ class Resposta {
 
     toObj() {
         const obj = {
-            questionarioId: this.questionarioId,
+            votacaoId: this.votacaoId,
             perguntas: this.perguntas,
             horario: this.horario,
             nomePessoa: this.nomePessoa,

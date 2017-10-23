@@ -34,7 +34,7 @@ class MongoDb {
 
 
 export const collections = {
-    questionario: 'questionario',
+    votacao: 'votacao',
     resposta: 'resposta'
 };
 

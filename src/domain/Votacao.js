@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-class Questionario {
+class Votacao {
 
     constructor(titulo, descricao = '', senhaAcesso = '', senhaAdmin = '', allowAnon = true, allowRewrite = true, endIn) {
         this._id = new ObjectId();
@@ -35,4 +35,4 @@ class Questionario {
 }
 
 
-export default Questionario;
+export default Votacao;

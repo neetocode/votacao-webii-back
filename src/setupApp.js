@@ -1,6 +1,5 @@
 
 // bibliotecas
-require('dotenv').config();
 import Express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -8,10 +7,10 @@ import bodyParser from 'body-parser';
 // servicos
 import MongoDb from './mongoDb'
 
-import QuestionarioController from './controller/QuestionarioController'
+import VotacaoController from './controller/VotacaoController'
 import RespostaController from './controller/RespostaController'
 
-import QuestionarioRouter from './router/QuestionarioRouter'
+import VotacaoRouter from './router/VotacaoRouter'
 import RespostaRouter from './router/RespostaRouter'
 
 // funcao que da start na aplicacao
@@ -25,7 +24,7 @@ const setupApp = async () => {
 
     //#region controllers
 
-    const questionarioCtrl = new QuestionarioController(db);
+    const votacaoCtrl = new VotacaoController(db);
     const respostaCtrl = new RespostaController(db);
 
     //#endregion
@@ -35,7 +34,7 @@ const setupApp = async () => {
 
     const rootRouter = Express.Router();
 
-    rootRouter.use('/questionario', QuestionarioRouter.configure(questionarioCtrl))
+    rootRouter.use('/votacao', VotacaoRouter.configure(votacaoCtrl))
     rootRouter.use('/resposta', RespostaRouter.configure(respostaCtrl))
 
 

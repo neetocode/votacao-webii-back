@@ -9,7 +9,7 @@ class RespostaController extends BaseController {
         super();
         
         this.db = db;
-        this.questionarioDb = db.collection(collections.questionario);
+        this.votacaoDb = db.collection(collections.votacao);
         this.respostaDb = db.collection(collections.resposta);
 
         this.validator = new ValidationContract();

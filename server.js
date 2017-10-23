@@ -1,3 +1,4 @@
+require('dotenv').config();
 import setupApp from './src/setupApp'
 import http from 'http'
 

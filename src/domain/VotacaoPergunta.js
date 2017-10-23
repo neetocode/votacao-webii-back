@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 
-class QuestionarioPergunta {
+class VotacaoPergunta {
 
     constructor(titulo) {
         this._id = new ObjectId();
@@ -21,4 +21,4 @@ class QuestionarioPergunta {
 }
 
 
-export default QuestionarioPergunta
+export default VotacaoPergunta

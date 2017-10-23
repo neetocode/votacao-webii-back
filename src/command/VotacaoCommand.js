@@ -1,48 +1,48 @@
 import BaseCommand from './BaseCommand'
 import { collections } from './../mongoDb';
 import { ObjectId } from 'mongodb';
-import Questionario from './../domain/Questionario'
+import Votacao from './../domain/Votacao'
 
-class QuestionarioCommand extends BaseCommand {
+class VotacaoCommand extends BaseCommand {
     constructor(db) {
         super();
 
         this.db = db;
 
-        this.questionarioDb = db.collection(collections.questionario);
+        this.votacaoDb = db.collection(collections.votacao);
         this.respostaDb = db.collection(collections.resposta);
 
-        this.getAllQuestionario = this.getAllQuestionario.bind(this);
-        this.getQuestionarioById = this.getQuestionarioById.bind(this);
-        this.createQuestionario = this.createQuestionario.bind(this);
-        this.editQuestionarioDados = this.editQuestionarioDados.bind(this);
-        this.startQuestionario = this.startQuestionario.bind(this);
-        this.endQuestionario = this.endQuestionario.bind(this);
+        this.getAllVotacao = this.getAllVotacao.bind(this);
+        this.getVotacaoById = this.getVotacaoById.bind(this);
+        this.createVotacao = this.createVotacao.bind(this);
+        this.editVotacaoDados = this.editVotacaoDados.bind(this);
+        this.startVotacao = this.startVotacao.bind(this);
+        this.endVotacao = this.endVotacao.bind(this);
     }
 
-    async getAllQuestionario() {
+    async getAllVotacao() {
         try {
 
-            const questionarios = await this.questionarioDb.find({}).toArray();
+            const votacaos = await this.votacaoDb.find({}).toArray();
 
-            return questionarios;
+            return votacaos;
 
         } catch (err) {
             return this.handleException(err);
         }
     }
-    async getQuestionarioById(questionarioId) {
+    async getVotacaoById(votacaoId) {
         try {
 
-            const questionario = await this.questionarioDb.findOne({ _id: new ObjectId(questionarioId) });
+            const votacao = await this.votacaoDb.findOne({ _id: new ObjectId(votacaoId) });
 
-            return questionario;
+            return votacao;
 
         } catch (err) {
             return this.handleException(err);
         }
     }
-    async createQuestionario(titulo, descricao, senhaAcesso, senhaAdmin, endIn, allowAnon, allowRewrite) {
+    async createVotacao(titulo, descricao, senhaAcesso, senhaAdmin, endIn, allowAnon, allowRewrite) {
         try {
 
             this.validator
@@ -61,12 +61,12 @@ class QuestionarioCommand extends BaseCommand {
 
             if (!this.validator.isValid()) return null;
 
-            const novoQuestionario = new Questionario(titulo, descricao, senhaAcesso, senhaAdmin, allowAnon, allowRewrite, endIn);
+            const novoVotacao = new Votacao(titulo, descricao, senhaAcesso, senhaAdmin, allowAnon, allowRewrite, endIn);
 
-            const insertResult = await this.questionarioDb.insertOne(novoQuestionario.toObj())
+            const insertResult = await this.votacaoDb.insertOne(novoVotacao.toObj())
 
             if (insertResult.insertedCount === 1) {
-                const value = await this.questionarioDb.findOne({ _id: insertResult.insertedId })
+                const value = await this.votacaoDb.findOne({ _id: insertResult.insertedId })
                 return value;
             } else {
                 return this.validator.addError('Falha ao gravar registro.');
@@ -78,9 +78,9 @@ class QuestionarioCommand extends BaseCommand {
         }
     }
 
-    async editQuestionarioDados(questionarioId, titulo, descricao, senhaAcesso, endIn, allowAnon, allowRewrite) {
+    async editVotacaoDados(votacaoId, titulo, descricao, senhaAcesso, endIn, allowAnon, allowRewrite) {
         try {
-            if (!questionarioId) return this.validator.addError('questionarioId é obrigatório.');
+            if (!votacaoId) return this.validator.addError('votacaoId é obrigatório.');
 
             this.validator
                 .minLength(titulo, 3, 'titulo')
@@ -100,7 +100,7 @@ class QuestionarioCommand extends BaseCommand {
                 allowRewrite: allowRewrite
             }
 
-            const updateResult = await this.questionarioDb.findOneAndUpdate({ _id: new ObjectId(questionarioId) }, { $set: updatePayload }, { returnNewDocument: true, returnOriginal: false });
+            const updateResult = await this.votacaoDb.findOneAndUpdate({ _id: new ObjectId(votacaoId) }, { $set: updatePayload }, { returnNewDocument: true, returnOriginal: false });
 
             if (updateResult.value) {
                 return updateResult.value;
@@ -114,14 +114,14 @@ class QuestionarioCommand extends BaseCommand {
         }
     }
 
-    async startQuestionario(questionarioId, senhaAdmin) {
+    async startVotacao(votacaoId, senhaAdmin) {
         try {
-            const questionario = await this.questionarioDb.findOne({ _id: new ObjectId(questionarioId) });
-            if (questionario == null) return this.validator.addError('Questionário não existe.');
+            const votacao = await this.votacaoDb.findOne({ _id: new ObjectId(votacaoId) });
+            if (votacao == null) return this.validator.addError('Questionário não existe.');
 
-            if (questionario.senhaAdmin !== senhaAdmin) return this.validator.addError('Senha inválida.')
+            if (votacao.senhaAdmin !== senhaAdmin) return this.validator.addError('Senha inválida.')
 
-            const updateResult = await this.questionarioDb.findOneAndUpdate({ _id: questionario._id }, { inProgress: true });
+            const updateResult = await this.votacaoDb.findOneAndUpdate({ _id: votacao._id }, { inProgress: true });
             if (updateResult.value) {
                 return true
             } else {
@@ -133,14 +133,14 @@ class QuestionarioCommand extends BaseCommand {
             return this.handleException(err);
         }
     }
-    async endQuestionario(questionarioId, senhaAdmin) {
+    async endVotacao(votacaoId, senhaAdmin) {
         try {
-            const questionario = await this.questionarioDb.findOne({ _id: new ObjectId(questionarioId) });
-            if (questionario == null) return this.validator.addError('Questionário não existe.');
+            const votacao = await this.votacaoDb.findOne({ _id: new ObjectId(votacaoId) });
+            if (votacao == null) return this.validator.addError('Questionário não existe.');
 
-            if (questionario.senhaAdmin !== senhaAdmin) return this.validator.addError('Senha inválida.')
+            if (votacao.senhaAdmin !== senhaAdmin) return this.validator.addError('Senha inválida.')
 
-            const updateResult = await this.questionarioDb.findOneAndUpdate({ _id: questionario._id }, { inProgress: false });
+            const updateResult = await this.votacaoDb.findOneAndUpdate({ _id: votacao._id }, { inProgress: false });
             if (updateResult.value) {
                 return true;
             } else {
@@ -155,4 +155,4 @@ class QuestionarioCommand extends BaseCommand {
 
 }
 
-export default QuestionarioCommand;
+export default VotacaoCommand;
