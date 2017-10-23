@@ -8,11 +8,12 @@ class QuestionarioCommand extends BaseCommand {
         super();
 
         this.db = db;
-        
+
         this.questionarioDb = db.collection(collections.questionario);
         this.respostaDb = db.collection(collections.resposta);
 
         this.getAllQuestionario = this.getAllQuestionario.bind(this);
+        this.getQuestionarioById = this.getQuestionarioById.bind(this);
         this.createQuestionario = this.createQuestionario.bind(this);
         this.editQuestionarioDados = this.editQuestionarioDados.bind(this);
         this.startQuestionario = this.startQuestionario.bind(this);
@@ -25,6 +26,17 @@ class QuestionarioCommand extends BaseCommand {
             const questionarios = await this.questionarioDb.find({}).toArray();
 
             return questionarios;
+
+        } catch (err) {
+            return this.handleException(err);
+        }
+    }
+    async getQuestionarioById(questionarioId) {
+        try {
+
+            const questionario = await this.questionarioDb.findOne({ _id: new ObjectId(questionarioId) });
+
+            return questionario;
 
         } catch (err) {
             return this.handleException(err);

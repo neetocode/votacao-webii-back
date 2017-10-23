@@ -8,7 +8,8 @@ class QuestionarioController extends BaseController {
 
         this.db = db;
 
-        this.getAllQuestionario = this.getAllQuestionario.bind(this);        
+        this.getAllQuestionario = this.getAllQuestionario.bind(this);
+        this.getQuestionarioById = this.getQuestionarioById.bind(this);
         this.createQuestionario = this.createQuestionario.bind(this);
     }
 
@@ -17,6 +18,22 @@ class QuestionarioController extends BaseController {
             const command = new QuestionarioCommand(this.db);
 
             const result = await command.getAllQuestionario();
+
+            if (command.validator.isValid())
+                this.OkOnlyData(resp, result)
+            else
+                this.Fail(resp, command.validator.errors)
+        } catch (ex) {
+            this.ServerError(resp, ex)
+        }
+    }
+    async getQuestionarioById(req, resp) {
+        try {
+            const command = new QuestionarioCommand(this.db);
+
+            const { questionarioId } = req.params;
+
+            const result = await command.getQuestionarioById(questionarioId);
 
             if (command.validator.isValid())
                 this.OkOnlyData(resp, result)

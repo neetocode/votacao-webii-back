@@ -5,6 +5,7 @@ class QuestionarioRouter {
         const router = express.Router();
 
         router.get('/', questionarioController.getAllQuestionario);
+        router.get('/:questionarioId', questionarioController.getQuestionarioById);
         
 
         router.post('/', questionarioController.createQuestionario);
