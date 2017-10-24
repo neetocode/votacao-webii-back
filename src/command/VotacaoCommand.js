@@ -34,7 +34,7 @@ class VotacaoCommand extends BaseCommand {
     async getVotacaoById(votacaoId) {
         try {
 
-            const votacao = await this.votacaoDb.findOne({ _id: new ObjectId(votacaoId) });
+            const votacao = await this.votacaoDb.findOne({ _id: new ObjectId(votacaoId) }, { senhaAcesso: 0, senhaAdmin: 0, perguntas: 0 });
 
             return votacao;
 
@@ -42,7 +42,18 @@ class VotacaoCommand extends BaseCommand {
             return this.handleException(err);
         }
     }
-    async createVotacao(titulo, descricao, senhaAcesso, senhaAdmin, endIn, allowAnon, allowRewrite) {
+    async getPerguntasByVotacaoId(votacaoId) {
+        try {
+
+            const votacao = await this.votacaoDb.findOne({ _id: new ObjectId(votacaoId) }, { perguntas: 1 });
+
+            return votacao.perguntas;
+
+        } catch (err) {
+            return this.handleException(err);
+        }
+    }
+    async createVotacao(titulo, descricao, senhaAcesso, senhaAdmin, endIn, allowAnon, allowRewrite, perguntas) {
         try {
 
             this.validator
@@ -60,6 +71,8 @@ class VotacaoCommand extends BaseCommand {
             if (senhaAcesso) this.validator.minLength(senhaAcesso, 4, 'senhaAcesso').maxLength(senhaAcesso, 8, 'senhaAcesso');
 
             if (!this.validator.isValid()) return null;
+
+            if (perguntas.length == 0) return this.validator.addError('Você deve passar ao menos uma pergunta.');
 
             const novoVotacao = new Votacao(titulo, descricao, senhaAcesso, senhaAdmin, allowAnon, allowRewrite, endIn);
 

@@ -6,7 +6,8 @@ class VotacaoRouter {
 
         router.get('/', votacaoController.getAllVotacao);
         router.get('/:votacaoId', votacaoController.getVotacaoById);
-        
+        router.get('/:votacaoId/perguntas', votacaoController.getPerguntasByVotacaoId);
+
 
         router.post('/', votacaoController.createVotacao);
 

@@ -43,13 +43,29 @@ class VotacaoController extends BaseController {
             this.ServerError(resp, ex)
         }
     }
+    async getPerguntasByVotacaoId(req, resp) {
+        try {
+            const command = new VotacaoCommand(this.db);
+
+            const { votacaoId } = req.params;
+
+            const result = await command.getPerguntasByVotacaoId(votacaoId);
+
+            if (command.validator.isValid())
+                this.OkOnlyData(resp, result)
+            else
+                this.Fail(resp, command.validator.errors)
+        } catch (ex) {
+            this.ServerError(resp, ex)
+        }
+    }
     async createVotacao(req, resp) {
         try {
             const command = new VotacaoCommand(this.db)
 
-            const { titulo, descricao, senhaAcesso, senhaAdmin, endIn, allowAnon, allowRewrite } = req.body;
+            const { titulo, descricao, senhaAcesso, senhaAdmin, endIn, allowAnon, allowRewrite, perguntas } = req.body;
 
-            const result = await command.createVotacao(titulo, descricao, senhaAcesso, senhaAdmin, endIn, allowAnon, allowRewrite)
+            const result = await command.createVotacao(titulo, descricao, senhaAcesso, senhaAdmin, endIn, allowAnon, allowRewrite, perguntas);
 
             if (command.validator.isValid())
                 this.Ok(resp, result)
